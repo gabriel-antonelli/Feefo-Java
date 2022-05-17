@@ -2,6 +2,7 @@ package core.services;
 
 import core.InputString;
 import core.JobTitleNormalizer;
+import core.services.exceptions.InternalSeverException;
 import core.services.exceptions.InvalidStringException;
 import core.services.exceptions.NotExpectedJobTitleException;
 import utils.StringNormalizer;
@@ -21,27 +22,31 @@ public class JobTitleNormalizerImp implements JobTitleNormalizer {
 
     @Override
     public String normalizeTitle() {
-        String inputtedString = inputString.getInputtedString();
-        verifyString(inputtedString);
-        String normalizedString = stringNormalizer.normalize(inputtedString);
-        if(normalizedString.contains("architect")) {
-            return "Architect";
+        try {
+            String inputtedString = inputString.getInputtedString();
+            verifyString(inputtedString);
+            String normalizedString = stringNormalizer.normalize(inputtedString);
+            if (normalizedString.contains("architect")) {
+                return "Architect";
+            }
+            if (normalizedString.contains("accountant")) {
+                return "Accountant";
+            }
+            if (normalizedString.contains("engineer")) {
+                return "Software engineer";
+            }
+            if (normalizedString.contains("surveyor")) {
+                return "Quantity surveyor";
+            }
+        } catch (Exception ex) {
+            throw new InternalSeverException("An unexpected internal error occurred: " + ex.getMessage());
         }
-        if(normalizedString.contains("accountant")) {
-            return "Accountant";
-        }
-        if(normalizedString.contains("engineer")) {
-            return "Software engineer";
-        }
-        if(normalizedString.contains("surveyor")) {
-            return "Quantity surveyor";
-        }
-        throw new NotExpectedJobTitleException("The job title: " + inputtedString + " was not expected");
+        throw new NotExpectedJobTitleException("The job title was not expected");
     }
 
     private void verifyString(String string) {
         boolean isStringValid = stringVerifier.isValidString(string);
-        if(!isStringValid) {
+        if (!isStringValid) {
             throw new InvalidStringException("String : " + string + " is not valid");
         }
     }
