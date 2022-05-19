@@ -1,5 +1,5 @@
 package utils;
 
 public interface StringNormalizer {
-    public String normalize(String pureString);
+    String normalize(String pureString);
 }

@@ -1,5 +1,5 @@
 package core;
 
 public interface JobTitleNormalizer {
-    public String normalizeTitle();
+    String normalizeTitle();
 }
