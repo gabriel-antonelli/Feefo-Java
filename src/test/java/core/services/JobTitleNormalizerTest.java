@@ -2,7 +2,6 @@ package core.services;
 
 import core.JobTitleNormalizer;
 import core.services.exceptions.InternalSeverException;
-import core.services.exceptions.NotExpectedJobTitleException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -59,15 +58,23 @@ class JobTitleNormalizerTest {
     @DisplayName("Should return Surveyor title")
     void testSurveyorTitle() {
         System.setIn(new ByteArrayInputStream("Qtd Surveyor".getBytes()));
-        String engineer = jobTitleNormalizer.normalizeTitle();
-        assertEquals("Quantity surveyor", engineer);
+        String quantitySurveyor = jobTitleNormalizer.normalizeTitle();
+        assertEquals("Quantity surveyor", quantitySurveyor);
     }
 
     @Test
-    @DisplayName("Should thrown NotExpectedJobTitleException")
-    void testNotExpectedJobTitleException() {
-        System.setIn(new ByteArrayInputStream(" ".getBytes()));
-        assertThrows(NotExpectedJobTitleException.class, () -> jobTitleNormalizer.normalizeTitle());
+    @DisplayName("Should return best match")
+    void testBestMatch() {
+        System.setIn(new ByteArrayInputStream("architect software engineer".getBytes()));
+        String bestMatch = jobTitleNormalizer.normalizeTitle();
+        assertEquals("Software engineer", bestMatch);
+    }
+    @Test
+    @DisplayName("Should return first title")
+    void testDrawScore() {
+        System.setIn(new ByteArrayInputStream("Quantity Surveyor software engineer".getBytes()));
+        String firstTitle = jobTitleNormalizer.normalizeTitle();
+        assertEquals("Quantity surveyor", firstTitle);
     }
 
     @Test
